@@ -782,7 +782,15 @@ async function sleep(ms) {
 }
 
 async function showIntro() {
-  tryPlayMusic();
+  // Auto-trigger music button after intro starts (simulates user interaction)
+  setTimeout(() => {
+    if (musicBtn && bgMusic) {
+      bgMusic.volume = 0.4;
+      bgMusic.muted = false;
+      bgMusic.play().catch(() => console.log('Autoplay attempt'));
+    }
+  }, 500);
+  
   await sleep(CONFIG.introDark);
 
   for (let i = 0; i < messages.length; i++) {
