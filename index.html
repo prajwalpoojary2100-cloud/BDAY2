@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 🎉</title>
+
+<!-- ========================================
+     🎂 BIRTHDAY SURPRISE WEBSITE
+     ========================================
+     HOW TO CUSTOMIZE:
+     1. Search for "CUSTOMIZE:" comments to find all editable sections
+     2. Change the name, messages, photos, and colors to your liking
+     3. For music: replace the `audioSrc` URLs with your own audio files
+     ======================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ====== CSS VARIABLES ====== */
+  :root {
+    /* CUSTOMIZE: Change these colors for a different vibe */
+    --rose:      #ff6b9d;
+    --pink:      #ff8fab;
+    --lilac:     #c77dff;
+    --violet:    #9d4edd;
+    --midnight:  #0a0a1a;
+    --deep:      #11112a;
+    --card-bg:   rgba(255,255,255,0.06);
+    --glow-rose: rgba(255,107,157,0.35);
+    --glow-lil:  rgba(199,125,255,0.35);
+    --text-soft: rgba(255,255,255,0.75);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--midnight);
+    color: #fff;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ====== CUSTOM SCROLLBAR ====== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--deep); }
+  ::-webkit-scrollbar-thumb { background: var(--lilac); border-radius: 3px; }
+
+  /* ====================================================
+     INTRO / SPLASH SCREEN
+  ==================================================== */
+  #intro {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--midnight);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+  }
+  #intro.hidden { opacity: 0; visibility: hidden; }
+
+  .intro-msg {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 8vw, 5rem);
+    background: linear-gradient(135deg, var(--rose), var(--lilac), #a8edea);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0; transform: translateY(30px) scale(0.95);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+    text-align: center;
+    padding: 0 1rem;
+    position: absolute;
+    pointer-events: none;
+  }
+  .intro-msg.visible { opacity: 1; transform: translateY(0) scale(1); }
+  .intro-msg.exit   { opacity: 0; transform: translateY(-30px) scale(1.05); }
+
+  /* ====================================================
+     BACKGROUND PARTICLES
+  ==================================================== */
+  #particle-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ====================================================
+     MAIN PAGE
+  ==================================================== */
+  #main-page {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 1.4s ease, transform 1.4s ease;
+    position: relative; z-index: 1;
+  }
+  #main-page.visible { opacity: 1; transform: translateY(0); }
+
+  /* ====================================================
+     HERO SECTION
+  ==================================================== */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem 1rem;
+    position: relative;
+    background: radial-gradient(ellipse at 30% 20%, rgba(157,78,221,0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 80%, rgba(255,107,157,0.18) 0%, transparent 55%);
+  }
+
+  .hero-date {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, var(--pink) 40%, var(--lilac) 80%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-sub {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: var(--text-soft);
+    margin-bottom: 3rem;
+  }
+
+  /* ====== BIRTHDAY CAKE ====== */
+  .cake-wrapper {
+    position: relative;
+    margin: 2rem auto;
+    width: fit-content;
+  }
+
+  .cake-glow {
+    position: absolute; inset: -40px;
+    background: radial-gradient(ellipse at center, var(--glow-rose) 0%, transparent 70%);
+    animation: glowPulse 2.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes glowPulse {
+    from { opacity: 0.5; transform: scale(0.95); }
+    to   { opacity: 1;   transform: scale(1.05); }
+  }
+
+  .cake-svg { position: relative; z-index: 1; filter: drop-shadow(0 0 20px rgba(255,107,157,0.5)); }
+
+  /* Candle flames */
+  .flame {
+    transform-origin: center bottom;
+    animation: flicker 0.6s ease-in-out infinite alternate;
+  }
+  .flame:nth-child(2) { animation-delay: 0.2s; }
+  .flame:nth-child(3) { animation-delay: 0.1s; }
+  .flame:nth-child(4) { animation-delay: 0.3s; }
+
+  @keyframes flicker {
+    from { transform: scaleY(1) skewX(0deg); opacity: 1; }
+    to   { transform: scaleY(1.15) skewX(3deg); opacity: 0.85; }
+  }
+
+  /* ====== SCROLL CUE ====== */
+  .scroll-cue {
+    margin-top: 4rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    opacity: 0.5; animation: bounce 2s ease-in-out infinite;
+  }
+  .scroll-cue span { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(8px); }
+  }
+
+  /* ====================================================
+     SECTION SHARED STYLES
+  ==================================================== */
+  .section {
+    padding: 6rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    margin-bottom: 2.5rem;
+    background: linear-gradient(135deg, #fff 30%, var(--lilac));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Fade-in on scroll */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  /* Divider */
+  .divider {
+    width: 100%; max-width: 900px; margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,107,157,0.4), transparent);
+  }
+
+  /* ====================================================
+     HEARTFELT MESSAGE
+  ==================================================== */
+  .message-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 3rem;
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+  }
+  .message-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 12rem;
+    color: var(--rose);
+    opacity: 0.08;
+    position: absolute;
+    top: -2rem; left: 1rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .message-card p {
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    line-height: 1.9;
+    color: var(--text-soft);
+    position: relative; z-index: 1;
+  }
+  .message-card p + p { margin-top: 1.2rem; }
+  .message-sig {
+    margin-top: 2rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.6rem;
+    color: var(--rose);
+  }
+
+  /* ====================================================
+     LOVE / APPRECIATE CARDS
+  ==================================================== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .love-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+    cursor: default;
+  }
+  .love-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--glow-rose) 0%, var(--glow-lil) 100%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    border-radius: inherit;
+  }
+  .love-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(255,107,157,0.35);
+    box-shadow: 0 20px 50px rgba(255,107,157,0.2);
+  }
+  .love-card:hover::after { opacity: 1; }
+
+  .love-card-inner { position: relative; z-index: 1; }
+  .love-card-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+  .love-card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: rgba(255,107,157,0.2);
+    position: absolute; top: 1rem; right: 1.2rem;
+    font-style: italic;
+    pointer-events: none;
+  }
+  .love-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+  }
+  .love-card p { font-size: 0.9rem; line-height: 1.7; color: var(--text-soft); }
+
+  /* staggered entrance */
+  .love-card { opacity: 0; transform: translateY(30px); transition-property: opacity, transform, border-color, box-shadow; transition-duration: 0.7s, 0.7s, 0.35s, 0.35s; }
+  .love-card.in-view { opacity: 1; transform: translateY(0); }
+
+  /* ====================================================
+     SURPRISE BUTTON & FIREWORKS
+  ==================================================== */
+  .surprise-section {
+    text-align: center;
+    padding: 6rem 1.5rem 8rem;
+  }
+
+  .surprise-btn {
+    position: relative;
+    background: linear-gradient(135deg, var(--rose), var(--violet));
+    border: none; color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem; font-weight: 500;
+    padding: 1.1rem 3rem;
+    border-radius: 60px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 10px 35px rgba(255,107,157,0.4);
+    overflow: hidden;
+  }
+  .surprise-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--violet), var(--rose));
+    opacity: 0; transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+  .surprise-btn:hover { transform: scale(1.06); box-shadow: 0 15px 50px rgba(255,107,157,0.55); }
+  .surprise-btn:hover::before { opacity: 1; }
+  .surprise-btn span { position: relative; z-index: 1; }
+  .surprise-btn:active { transform: scale(0.97); }
+
+  #surprise-message {
+    max-width: 680px; margin: 3rem auto 0;
+    opacity: 0; transform: scale(0.9);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+    pointer-events: none;
+  }
+  #surprise-message.show { opacity: 1; transform: scale(1); pointer-events: all; }
+
+  .surprise-inner {
+    background: linear-gradient(135deg, rgba(255,107,157,0.15), rgba(157,78,221,0.15));
+    border: 1px solid rgba(255,107,157,0.3);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    backdrop-filter: blur(12px);
+  }
+  .surprise-inner h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 5vw, 3rem);
+    background: linear-gradient(135deg, var(--rose), var(--lilac));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.2rem;
+  }
+  .surprise-inner p {
+    font-size: 1.05rem; line-height: 1.85;
+    color: var(--text-soft);
+  }
+  .surprise-emoji {
+    font-size: 3rem; margin-top: 1.5rem; display: block;
+    animation: heartbeat 1.2s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.2); }
+  }
+
+  /* ====== FIREWORKS CANVAS ====== */
+  #fireworks-canvas {
+    position: fixed; inset: 0; z-index: 9000;
+    pointer-events: none;
+  }
+
+  /* ====================================================
+     FLOATING BALLOONS
+  ==================================================== */
+  .balloon-layer {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 2;
+    overflow: hidden;
+  }
+  .balloon {
+    position: absolute; bottom: -120px;
+    animation: floatUp linear forwards;
+    opacity: 0;
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+    100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+  }
+
+  /* ====================================================
+     FOOTER
+  ==================================================== */
+  footer {
+    text-align: center;
+    padding: 3rem 1rem 4rem;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.3);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ====================================================
+     MUSIC TOGGLE
+  ==================================================== */
+  .music-btn {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9998;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; width: 50px; height: 50px;
+    border-radius: 50%; font-size: 1.3rem;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s, background 0.3s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .music-btn:hover { transform: scale(1.12); background: rgba(255,107,157,0.3); }
+  .music-btn.muted { opacity: 0.5; }
+
+  /* ====================================================
+     RESPONSIVE TWEAKS
+  ==================================================== */
+  @media (max-width: 600px) {
+    .message-card { padding: 2rem 1.5rem; }
+    .surprise-inner { padding: 2rem 1.5rem; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================
+     🎵 AUDIO ELEMENTS
+     CUSTOMIZE: Replace `src` with your own music files or URLs
+     For best results, use .mp3 files hosted online or local files
+======================================== -->
+<audio id="bg-music" loop crossorigin="anonymous">
+  <!-- Soft background music (plays during intro + main page) -->
+  <source src="MUSIC/WhatsApp Audio 2026-04-22 at 7.45.24 PM.mpeg" type="audio/mpeg">
+</audio>
+
+<audio id="surprise-music" crossorigin="anonymous">
+  <!-- Surprise music (plays when surprise button clicked) -->
+  <source src="MUSIC/WhatsApp Audio 2026-04-22 at 7.45.24 PM.mpeg" type="audio/mpeg">
+</audio>
+
+<!-- ========================================
+     🎆 FIREWORKS CANVAS
+======================================== -->
+<canvas id="fireworks-canvas"></canvas>
+
+<!-- ========================================
+     🎈 BALLOON LAYER
+======================================== -->
+<div class="balloon-layer" id="balloon-layer"></div>
+
+<!-- ========================================
+     🌟 PARTICLE BACKGROUND
+======================================== -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- ========================================
+     🌙 INTRO SCREEN
+======================================== -->
+<div id="intro">
+  <!-- CUSTOMIZE: Change the name below -->
+  <div class="intro-msg" id="msg-1">Hey Daaa 🎉</div>
+  <div class="intro-msg" id="msg-2">I have something special for you...</div>
+  <div class="intro-msg" id="msg-3">Because today is your day 💖</div>
+  <!-- CUSTOMIZE: Change the name below -->
+  <div class="intro-msg" id="msg-4">Happy Birthday Daaa 🎂</div>
+</div>
+
+<!-- ========================================
+     🎂 MAIN BIRTHDAY PAGE
+======================================== -->
+<div id="main-page">
+
+  <!-- ========= HERO ========= -->
+  <section class="hero">
+    <p class="hero-date">✨ A Very Special Day ✨</p>
+
+    <!-- CUSTOMIZE: Change the name below -->
+    <h1>Happy Birthday,<br>Daaa 🎂</h1>
+    <p class="hero-sub">Today the universe celebrates you</p>
+
+    <!-- BIRTHDAY CAKE SVG -->
+    <div class="cake-wrapper">
+      <div class="cake-glow"></div>
+      <svg class="cake-svg" width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Plate -->
+        <ellipse cx="110" cy="195" rx="80" ry="12" fill="rgba(255,107,157,0.25)"/>
+        <!-- Cake body bottom tier -->
+        <rect x="30" y="145" width="160" height="55" rx="12" fill="url(#cake-grad-1)"/>
+        <!-- Bottom tier stripe decoration -->
+        <rect x="30" y="162" width="160" height="8" fill="rgba(255,255,255,0.12)"/>
+        <!-- Cake body top tier -->
+        <rect x="52" y="100" width="116" height="50" rx="10" fill="url(#cake-grad-2)"/>
+        <!-- Top tier stripe -->
+        <rect x="52" y="115" width="116" height="7" fill="rgba(255,255,255,0.15)"/>
+        <!-- Frosting drips bottom -->
+        <path d="M30 150 Q50 138 70 150 Q90 162 110 150 Q130 138 150 150 Q170 162 190 150" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- Frosting drips top -->
+        <path d="M52 105 Q70 94 88 105 Q106 116 124 105 Q142 94 168 105" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <!-- Candles -->
+        <rect x="72"  y="76" width="8" height="26" rx="4" fill="#ff8fab"/>
+        <rect x="96"  y="70" width="8" height="32" rx="4" fill="#c77dff"/>
+        <rect x="120" y="74" width="8" height="28" rx="4" fill="#ff8fab"/>
+        <rect x="144" y="70" width="8" height="32" rx="4" fill="#c77dff"/>
+        <!-- Flames -->
+        <ellipse class="flame" cx="76"  cy="74" rx="5" ry="8" fill="url(#flame-grad)"/>
+        <ellipse class="flame" cx="100" cy="68" rx="5" ry="8" fill="url(#flame-grad)"/>
+        <ellipse class="flame" cx="124" cy="72" rx="5" ry="8" fill="url(#flame-grad)"/>
+        <ellipse class="flame" cx="148" cy="68" rx="5" ry="8" fill="url(#flame-grad)"/>
+        <!-- Stars decoration -->
+        <text x="38"  y="180" font-size="14" fill="white" opacity="0.6">✦</text>
+        <text x="172" y="175" font-size="12" fill="white" opacity="0.5">✦</text>
+        <text x="60"  y="128" font-size="10" fill="white" opacity="0.5">✦</text>
+        <text x="150" y="125" font-size="10" fill="white" opacity="0.6">✦</text>
+        <!-- Gradients -->
+        <defs>
+          <linearGradient id="cake-grad-1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#ff8fab"/>
+            <stop offset="100%" stop-color="#c77dff"/>
+          </linearGradient>
+          <linearGradient id="cake-grad-2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#c77dff"/>
+            <stop offset="100%" stop-color="#9d4edd"/>
+          </linearGradient>
+          <linearGradient id="flame-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#fff7aa"/>
+            <stop offset="50%"  stop-color="#ffb347"/>
+            <stop offset="100%" stop-color="#ff6b35"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="scroll-cue">
+      <span>Scroll down</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ========= HEARTFELT MESSAGE ========= -->
+  <section class="section reveal">
+    <p class="section-label">A letter from the heart</p>
+    <!-- CUSTOMIZE: Change the section title below -->
+    <h2 class="section-title">For Someone Wonderful</h2>
+
+    <div class="message-card">
+      <!-- CUSTOMIZE: Replace these paragraphs with your personal message -->
+      <p>
+        There are some people who walk into your life and completely change the color of it —
+        who make ordinary Tuesday mornings feel like something worth celebrating, and who
+        somehow manage to make the whole world a little softer just by being in it.
+        You are one of those people.
+      </p>
+      <p>
+        On this beautiful day that belongs entirely to you, I want you to know how incredibly
+        grateful I am that you exist — that your laugh, your warmth, your ridiculous jokes
+        and your quiet kindness are all part of my world. You deserve every good thing this
+        life has to offer, and then some.
+      </p>
+      <p>
+        So here's to you. To another year of growing, glowing, and being the extraordinary
+        human you already are. May this birthday feel as magical as you make everyone
+        around you feel, every single day.
+      </p>
+      <!-- CUSTOMIZE: Change the signature below -->
+      <div class="message-sig">With all my love 💕</div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ========= REASONS I LOVE YOU ========= -->
+  <section class="section">
+    <p class="section-label">The list goes on forever</p>
+    <h2 class="section-title reveal">Reasons I Love You</h2>
+
+    <div class="cards-grid">
+      <!--
+        CUSTOMIZE: Edit each card's icon, title, and description.
+        Add or remove cards as you like.
+      -->
+      <div class="love-card">
+        <div class="love-card-inner">
+          <span class="love-card-num">01</span>
+          <span class="love-card-icon">🌟</span>
+          <h3>Your Radiant Energy</h3>
+          <p>You walk into a room and the whole vibe shifts. There's simply no one like you.</p>
+        </div>
+      </div>
+      <div class="love-card">
+        <div class="love-card-inner">
+          <span class="love-card-num">02</span>
+          <span class="love-card-icon">😂</span>
+          <h3>That Contagious Laugh</h3>
+          <p>Honestly, your laugh should be classified as medicine. It fixes everything.</p>
+        </div>
+      </div>
+      <div class="love-card">
+        <div class="love-card-inner">
+          <span class="love-card-num">03</span>
+          <span class="love-card-icon">💪</span>
+          <h3>Your Quiet Strength</h3>
+          <p>You've faced hard days with such grace. The way you keep going is inspiring.</p>
+        </div>
+      </div>
+      <div class="love-card">
+        <div class="love-card-inner">
+          <span class="love-card-num">04</span>
+          <span class="love-card-icon">🤗</span>
+          <h3>How You Make People Feel</h3>
+          <p>Everyone around you feels seen and valued. That's a rare and beautiful gift.</p>
+        </div>
+      </div>
+      <div class="love-card">
+        <div class="love-card-inner">
+          <span class="love-card-num">05</span>
+          <span class="love-card-icon">🌸</span>
+          <h3>Your Gentle Kindness</h3>
+          <p>You're soft in the best way — endlessly kind without ever being naive.</p>
+        </div>
+      </div>
+      <div class="love-card">
+        <div class="love-card-inner">
+          <span class="love-card-num">06</span>
+          <span class="love-card-icon">✨</span>
+          <h3>Simply Being You</h3>
+          <p>This world is genuinely better because you're in it. Never forget that.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ========= SURPRISE BUTTON ========= -->
+  <section class="surprise-section reveal">
+    <p class="section-label" style="margin-bottom:2rem;">One last thing...</p>
+    <button class="surprise-btn" id="surprise-btn">
+      <span>Click for Surprise 🎁</span>
+    </button>
+
+    <div id="surprise-message">
+      <div class="surprise-inner">
+        <!-- CUSTOMIZE: Edit this final surprise message -->
+        <h2>You are beyond loved 🌙</h2>
+        <p>
+          If I could give you one thing today, it would be the ability to see yourself through
+          my eyes — so you'd know just how dazzling, how rare, how irreplaceable you truly are.
+          This isn't just a birthday wish. It's a reminder that chose you matter enormously,
+          that your presence is a gift the world is lucky to have, and that no matter where
+          life takes you, you are so, so deeply loved.
+        </p>
+        <p style="margin-top:1rem;">
+          Happy Birthday, beautiful soul. Here's to your best year yet. 🥂
+        </p>
+        <!-- CUSTOMIZE: Change the emoji below -->
+        <span class="surprise-emoji">💖</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========= FOOTER ========= -->
+  <footer>
+    <!-- CUSTOMIZE: Change the footer text below -->
+    Made with love, just for you · Daaa  's Special Day 🎂
+  </footer>
+
+</div><!-- /main-page -->
+
+<!-- ========================================
+     🔊 MUSIC TOGGLE BUTTON
+======================================== -->
+<button class="music-btn" id="music-btn" title="Toggle music">🎵</button>
+
+<script>
+// ========================================
+// 🎉 BIRTHDAY SURPRISE — MAIN SCRIPT
+// ========================================
+
+// ——— CONFIG ——————————————————————————————
+// CUSTOMIZE: Tweak timing (in milliseconds)
+const CONFIG = {
+  introDark:   2000,   // Dark screen before first message
+  msgDuration: 2000,   // How long each message shows
+  msgExit:     600,    // Exit fade duration
+  mainReveal:  700,    // Delay after last message before page appears
+};
+
+// ——— ELEMENTS ————————————————————————————
+const intro       = document.getElementById('intro');
+const mainPage    = document.getElementById('main-page');
+const bgMusic     = document.getElementById('bg-music');
+const surpriseMusic = document.getElementById('surprise-music');
+const musicBtn    = document.getElementById('music-btn');
+const surpriseBtn = document.getElementById('surprise-btn');
+const surpriseMsg = document.getElementById('surprise-message');
+const fwCanvas    = document.getElementById('fireworks-canvas');
+const particleCanvas = document.getElementById('particle-canvas');
+const balloonLayer = document.getElementById('balloon-layer');
+
+let musicMuted   = false;
+let surprisePlayed = false;
+
+// ——— MUSIC ——————————————————————————————
+function tryPlayMusic() {
+  if (bgMusic) {
+    bgMusic.volume = 0.4;
+    bgMusic.play().catch(() => {
+      // Autoplay blocked — user will use toggle button
+    });
+  }
+}
+
+if (musicBtn) {
+  musicBtn.addEventListener('click', () => {
+    if (bgMusic && surpriseMusic) {
+      if (!bgMusic.paused || !surpriseMusic.paused) {
+        bgMusic.pause(); surpriseMusic.pause();
+        musicBtn.textContent = '🔇'; musicBtn.classList.add('muted');
+        musicMuted = true;
+      } else {
+        const active = surprisePlayed ? surpriseMusic : bgMusic;
+        active.volume = 0.4; active.play().catch(() => {
+          console.log('Audio playback failed - may need to serve via HTTP');
+        });
+        musicBtn.textContent = '🎵'; musicBtn.classList.remove('muted');
+        musicMuted = false;
+      }
+    }
+  });
+}
+
+// ——— INTRO SEQUENCE ———————————————————————
+const messages = ['msg-1','msg-2','msg-3','msg-4'];
+
+async function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+async function showIntro() {
+  tryPlayMusic();
+  await sleep(CONFIG.introDark);
+
+  for (let i = 0; i < messages.length; i++) {
+    const el = document.getElementById(messages[i]);
+    el.classList.add('visible');
+    await sleep(CONFIG.msgDuration);
+    el.classList.add('exit');
+    await sleep(CONFIG.msgExit);
+    el.classList.remove('visible', 'exit');
+  }
+
+  await sleep(CONFIG.mainReveal);
+  intro.classList.add('hidden');
+  mainPage.classList.add('visible');
+  document.body.style.overflowY = 'auto';
+  startBalloons();
+}
+
+document.body.style.overflowY = 'hidden';
+showIntro();
+
+// ——— PARTICLE BACKGROUND ——————————————————
+(function particles() {
+  const ctx = particleCanvas.getContext('2d');
+  const pts = [];
+  const COUNT = 90;
+
+  function resize() {
+    particleCanvas.width  = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < COUNT; i++) {
+    pts.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.8 + 0.4,
+      dx: (Math.random() - 0.5) * 0.25,
+      dy: (Math.random() - 0.5) * 0.25,
+      o: Math.random() * 0.5 + 0.1,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    pts.forEach(p => {
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0) p.x = particleCanvas.width;
+      if (p.x > particleCanvas.width)  p.x = 0;
+      if (p.y < 0) p.y = particleCanvas.height;
+      if (p.y > particleCanvas.height) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${p.o})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ——— SCROLL REVEAL —————————————————————————
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('in-view');
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Stagger love cards
+const cardObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const cards = e.target.querySelectorAll('.love-card');
+      cards.forEach((c, i) => {
+        setTimeout(() => c.classList.add('in-view'), i * 100);
+      });
+      cardObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+const grid = document.querySelector('.cards-grid');
+if (grid) cardObs.observe(grid);
+
+// ——— BALLOONS ————————————————————————————————
+function startBalloons() {
+  const emojis = ['🎈','🎈','🎀','🎊','🎉','💖','⭐','🌸'];
+  function launch() {
+    const el = document.createElement('div');
+    el.className = 'balloon';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    const dur = 5 + Math.random() * 8;
+    el.style.animationDuration = dur + 's';
+    el.style.fontSize = (1.5 + Math.random() * 2) + 'rem';
+    balloonLayer.appendChild(el);
+    setTimeout(() => el.remove(), dur * 1000 + 500);
+  }
+  // Initial burst
+  for (let i = 0; i < 6; i++) setTimeout(launch, i * 300);
+  // Continuous
+  setInterval(launch, 1800);
+}
+
+// ——— FIREWORKS ———————————————————————————————
+(function fireworks() {
+  const ctx = fwCanvas.getContext('2d');
+  let particles = [];
+  let running = false;
+  let animId = null;
+
+  function resize() {
+    fwCanvas.width  = window.innerWidth;
+    fwCanvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function randomColor() {
+    const colors = ['#ff6b9d','#ff8fab','#c77dff','#9d4edd','#ffb3c6','#a8edea','#fff7aa','#ffb347'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  function explode(x, y) {
+    const count = 80 + Math.floor(Math.random() * 40);
+    const color = randomColor();
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i;
+      const speed = 2 + Math.random() * 5;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1,
+        decay: 0.012 + Math.random() * 0.018,
+        r: 2 + Math.random() * 3,
+        color,
+      });
+    }
+  }
+
+  function loop() {
+    ctx.fillStyle = 'rgba(10,10,26,0.15)';
+    ctx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+    particles = particles.filter(p => p.life > 0);
+    particles.forEach(p => {
+      p.x  += p.vx; p.y += p.vy;
+      p.vy += 0.06; // gravity
+      p.vx *= 0.98;
+      p.life -= p.decay;
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (running) animId = requestAnimationFrame(loop);
+    else if (!particles.length) ctx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+  }
+
+  window.launchFireworks = function() {
+    running = true;
+    if (!animId) loop();
+
+    let shots = 0;
+    const maxShots = 18;
+    function shoot() {
+      if (shots >= maxShots) {
+        running = false; return;
+      }
+      explode(
+        fwCanvas.width * (0.15 + Math.random() * 0.7),
+        fwCanvas.height * (0.1 + Math.random() * 0.5)
+      );
+      shots++;
+      setTimeout(shoot, 350 + Math.random() * 300);
+    }
+    shoot();
+  };
+})();
+
+// ——— SURPRISE BUTTON —————————————————————————
+surpriseBtn.addEventListener('click', () => {
+  // Show message
+  surpriseMsg.classList.add('show');
+
+  // Swap music
+  if (!musicMuted) {
+    bgMusic.pause();
+    surpriseMusic.volume = 0.4;
+    surpriseMusic.play().catch(() => {});
+  }
+  surprisePlayed = true;
+
+  // Fire fireworks
+  window.launchFireworks();
+
+  // Launch extra balloons
+  for (let i = 0; i < 12; i++) {
+    const el = document.createElement('div');
+    el.className = 'balloon';
+    el.textContent = ['🎆','🎇','🎉','🎊','💖','🌟'][i % 6];
+    el.style.left = Math.random() * 100 + 'vw';
+    const dur = 4 + Math.random() * 5;
+    el.style.animationDuration = dur + 's';
+    el.style.fontSize = '2.5rem';
+    document.getElementById('balloon-layer').appendChild(el);
+    setTimeout(() => el.remove(), dur * 1000 + 500);
+  }
+
+  // Scroll to message
+  setTimeout(() => {
+    surpriseMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 400);
+
+  // Disable button
+  surpriseBtn.disabled = true;
+  surpriseBtn.style.opacity = '0.6';
+  surpriseBtn.querySelector('span').textContent = '🎊 Surprise Revealed!';
+});
+</script>
+</body>
+</html>
