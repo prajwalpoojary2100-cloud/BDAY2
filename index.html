@@ -459,14 +459,14 @@
      CUSTOMIZE: Replace `src` with your own music files or URLs
      For best results, use .mp3 files hosted online or local files
 ======================================== -->
-<audio id="bg-music" loop crossorigin="anonymous">
+<audio id="bg-music" loop crossorigin="anonymous" preload="auto">
   <!-- Soft background music (plays during intro + main page) -->
-  <source src="https://cdn.jsdelivr.net/gh/prajwalpoojary2100-cloud/BDAY2/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
+  <source src="https://github.com/prajwalpoojary2100-cloud/BDAY2/raw/main/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
 </audio>
 
-<audio id="surprise-music" crossorigin="anonymous">
+<audio id="surprise-music" crossorigin="anonymous" preload="auto">
   <!-- Surprise music (plays when surprise button clicked) -->
-  <source src="https://cdn.jsdelivr.net/gh/prajwalpoojary2100-cloud/BDAY2/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
+  <source src="https://github.com/prajwalpoojary2100-cloud/BDAY2/raw/main/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
 </audio>
 
 <!-- ========================================
@@ -784,12 +784,17 @@ async function sleep(ms) {
 async function showIntro() {
   // Auto-trigger music button after intro starts (simulates user interaction)
   setTimeout(() => {
-    if (musicBtn && bgMusic) {
+    if (bgMusic) {
       bgMusic.volume = 0.4;
       bgMusic.muted = false;
-      bgMusic.play().catch(() => console.log('Autoplay attempt'));
+      console.log('Playing music, paused:', bgMusic.paused, 'src:', bgMusic.src);
+      bgMusic.play().then(() => {
+        console.log('Music playing successfully!');
+      }).catch(err => {
+        console.log('Play error:', err);
+      });
     }
-  }, 500);
+  }, 1000);
   
   await sleep(CONFIG.introDark);
 
