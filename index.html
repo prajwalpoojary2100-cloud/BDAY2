@@ -782,12 +782,12 @@ async function sleep(ms) {
 }
 
 async function showIntro() {
-  // Auto-trigger music by simulating a click after page loads (this works!)
+  // Auto-trigger music immediately when intro starts
   setTimeout(() => {
     if (musicBtn) {
       musicBtn.click();
     }
-  }, 1500);
+  }, 100);
   
   await sleep(CONFIG.introDark);
 
