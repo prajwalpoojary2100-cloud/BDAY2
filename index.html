@@ -459,14 +459,14 @@
      CUSTOMIZE: Replace `src` with your own music files or URLs
      For best results, use .mp3 files hosted online or local files
 ======================================== -->
-<audio id="bg-music" loop crossorigin="anonymous" autoplay muted>
+<audio id="bg-music" loop crossorigin="anonymous">
   <!-- Soft background music (plays during intro + main page) -->
-  <source src="https://raw.githubusercontent.com/prajwalpoojary2100-cloud/BDAY2/main/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
+  <source src="https://cdn.jsdelivr.net/gh/prajwalpoojary2100-cloud/BDAY2/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
 </audio>
 
-<audio id="surprise-music" crossorigin="anonymous" autoplay muted>
+<audio id="surprise-music" crossorigin="anonymous">
   <!-- Surprise music (plays when surprise button clicked) -->
-  <source src="https://raw.githubusercontent.com/prajwalpoojary2100-cloud/BDAY2/main/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
+  <source src="https://cdn.jsdelivr.net/gh/prajwalpoojary2100-cloud/BDAY2/MUSIC/WhatsApp%20Audio%202026-04-22%20at%207.45.24%20PM.mpeg" type="audio/mpeg">
 </audio>
 
 <!-- ========================================
@@ -739,10 +739,19 @@ let surprisePlayed = false;
 function tryPlayMusic() {
   if (bgMusic) {
     bgMusic.volume = 0.4;
-    bgMusic.muted = false; // Unmute to start playing
-    bgMusic.play().catch(() => {
-      // Fallback if autoplay still fails
-    });
+    bgMusic.muted = false;
+    bgMusic.play().catch(err => console.log('Play attempt 1:', err));
+    
+    // Aggressive retry - try every 100ms for 2 seconds
+    let attempts = 0;
+    const retryInterval = setInterval(() => {
+      if (bgMusic && bgMusic.paused && attempts < 20) {
+        bgMusic.play().catch(() => {});
+        attempts++;
+      } else {
+        clearInterval(retryInterval);
+      }
+    }, 100);
   }
 }
 
@@ -756,7 +765,7 @@ if (musicBtn) {
       } else {
         const active = surprisePlayed ? surpriseMusic : bgMusic;
         active.volume = 0.4; active.muted = false; active.play().catch(() => {
-          console.log('Audio playback failed - may need to serve via HTTP');
+          console.log('Audio playback failed');
         });
         musicBtn.textContent = '🎵'; musicBtn.classList.remove('muted');
         musicMuted = false;
@@ -772,28 +781,8 @@ async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-async function startMusicOnInteraction() {
-  const startMusic = () => {
-    if (bgMusic) {
-      bgMusic.volume = 0.4;
-      bgMusic.muted = false;
-      bgMusic.play().catch(() => {
-        console.log('Audio playback caught but continuing...');
-      });
-    }
-    // Remove listener after first interaction
-    document.removeEventListener('click', startMusic);
-    document.removeEventListener('touchstart', startMusic);
-    document.removeEventListener('keydown', startMusic);
-  };
-  
-  document.addEventListener('click', startMusic);
-  document.addEventListener('touchstart', startMusic);
-  document.addEventListener('keydown', startMusic);
-}
-
 async function showIntro() {
-  startMusicOnInteraction();
+  tryPlayMusic();
   await sleep(CONFIG.introDark);
 
   for (let i = 0; i < messages.length; i++) {
