@@ -772,8 +772,28 @@ async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+async function startMusicOnInteraction() {
+  const startMusic = () => {
+    if (bgMusic) {
+      bgMusic.volume = 0.4;
+      bgMusic.muted = false;
+      bgMusic.play().catch(() => {
+        console.log('Audio playback caught but continuing...');
+      });
+    }
+    // Remove listener after first interaction
+    document.removeEventListener('click', startMusic);
+    document.removeEventListener('touchstart', startMusic);
+    document.removeEventListener('keydown', startMusic);
+  };
+  
+  document.addEventListener('click', startMusic);
+  document.addEventListener('touchstart', startMusic);
+  document.addEventListener('keydown', startMusic);
+}
+
 async function showIntro() {
-  tryPlayMusic();
+  startMusicOnInteraction();
   await sleep(CONFIG.introDark);
 
   for (let i = 0; i < messages.length; i++) {
