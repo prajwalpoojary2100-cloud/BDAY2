@@ -459,12 +459,12 @@
      CUSTOMIZE: Replace `src` with your own music files or URLs
      For best results, use .mp3 files hosted online or local files
 ======================================== -->
-<audio id="bg-music" loop crossorigin="anonymous">
+<audio id="bg-music" loop crossorigin="anonymous" autoplay muted>
   <!-- Soft background music (plays during intro + main page) -->
   <source src="MUSIC/WhatsApp Audio 2026-04-22 at 7.45.24 PM.mpeg" type="audio/mpeg">
 </audio>
 
-<audio id="surprise-music" crossorigin="anonymous">
+<audio id="surprise-music" crossorigin="anonymous" autoplay muted>
   <!-- Surprise music (plays when surprise button clicked) -->
   <source src="MUSIC/WhatsApp Audio 2026-04-22 at 7.45.24 PM.mpeg" type="audio/mpeg">
 </audio>
@@ -739,8 +739,9 @@ let surprisePlayed = false;
 function tryPlayMusic() {
   if (bgMusic) {
     bgMusic.volume = 0.4;
+    bgMusic.muted = false; // Unmute to start playing
     bgMusic.play().catch(() => {
-      // Autoplay blocked — user will use toggle button
+      // Fallback if autoplay still fails
     });
   }
 }
@@ -748,13 +749,13 @@ function tryPlayMusic() {
 if (musicBtn) {
   musicBtn.addEventListener('click', () => {
     if (bgMusic && surpriseMusic) {
-      if (!bgMusic.paused || !surpriseMusic.paused) {
-        bgMusic.pause(); surpriseMusic.pause();
+      if (!bgMusic.muted || !surpriseMusic.muted) {
+        bgMusic.muted = true; surpriseMusic.muted = true;
         musicBtn.textContent = '🔇'; musicBtn.classList.add('muted');
         musicMuted = true;
       } else {
         const active = surprisePlayed ? surpriseMusic : bgMusic;
-        active.volume = 0.4; active.play().catch(() => {
+        active.volume = 0.4; active.muted = false; active.play().catch(() => {
           console.log('Audio playback failed - may need to serve via HTTP');
         });
         musicBtn.textContent = '🎵'; musicBtn.classList.remove('muted');
